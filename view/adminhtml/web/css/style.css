@@ -1,0 +1,10 @@
+.whatsapp-block button.whatsapp {
+    border: 0;
+    background-image: url(../images/whatsapp.svg);
+    background-repeat: no-repeat;
+    background-color: #7CEC7B;
+    padding: 10px 10px 10px 41px;
+    background-size: 23px;
+    background-position: 10px center;
+    border-radius: 5px;
+}

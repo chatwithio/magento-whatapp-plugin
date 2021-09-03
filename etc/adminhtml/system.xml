@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="tochat" translate="label" sortOrder="10">
+            <label>ToChat</label>
+        </tab>
+        <section id="tochat_whatsapp" translate="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Whatsapp</label>
+            <tab>tochat</tab>
+            <resource>Tochat_Whatsapp::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1">
+                <label>General</label>
+                <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" canRestore="1">
+                    <label>Enable/Disable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="order_messages" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
+                <label>Order Messages</label>
+                <field id="pending" translate="label" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" canRestore="1">
+                    <label>Pending</label>
+                </field>
+                <field id="processing" translate="label" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" canRestore="1">
+                    <label>Processing</label>
+                </field>
+                <field id="canceled" translate="label" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" canRestore="1">
+                    <label>Canceled</label>
+                </field>
+                <field id="complete" translate="label" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" canRestore="1">
+                    <label>Completed</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
