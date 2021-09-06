@@ -1,0 +1,45 @@
+<?php
+
+$helper = $block->getViewModel();
+
+?>
+<div style="display: none;">
+    <div id="whatsapp-modal">
+        <div class="modal-body-content">
+            <form  data-mage-init='{"validation": {}}'>
+                <input type="hidden" name="order_id" />
+                <fieldset class="admin__fieldset">
+                    <div class="admin__field">
+                        <div class="admin__field-label">
+                             <label><?= /* @noEscape */ __("Phone Number") ?></label>
+                        </div>
+                        <div class="admin__field-control">
+                            <input type="text" name="phone" class="admin__control-text required-entry" />
+                            <div class="admin__field-note">
+                                <span><?= /* @noEscape */ __("Please add the country code before sending the message. Edit the user profile to keep the country code in the number. Just add numbers, no + sign.") ?></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="admin__field">
+                        <div class="admin__field-label">
+                             <label><?= /* @noEscape */ __("Message") ?></label>
+                        </div>
+                        <div class="admin__field-control">
+                             <textarea name="message" rows="5" class="admin__control-textarea required-entry"></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Tochat_Whatsapp/js/whatsapp": {
+                "messages": <?= /* @noEscape */ json_encode($helper->getMessages()) ?>,
+                "url": "<?= $block->escapeUrl($block->getUrl('tochatw/index/send')) ?>"
+            }
+        }
+    }
+</script>

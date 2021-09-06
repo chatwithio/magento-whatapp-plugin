@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="Mgenius\FeaturedProducts\Api\FeaturedRepositoryInterface" type="Mgenius\FeaturedProducts\Model\FeaturedRepository" />
+
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="mgeniuftred_listing_data_source" xsi:type="string">Mgenius\FeaturedProducts\Model\ResourceModel\Featured\Grid</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Mgenius\FeaturedProducts\Model\ResourceModel\Featured\Grid"
+             type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">mgenius_featured</argument>
+            <argument name="resourceModel" xsi:type="string">Mgenius\FeaturedProducts\Model\ResourceModel\Featured</argument>
+        </arguments>
+    </virtualType>
+</config>
