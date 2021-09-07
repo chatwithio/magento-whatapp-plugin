@@ -2,10 +2,14 @@
 <layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/layout_generic.xsd">
     <body>
         <referenceContainer name="order_additional_info">
-            <block class="Magento\Sales\Block\Adminhtml\Order\View" template="Tochat_Whatsapp::view.phtml"/>
+            <block class="Magento\Sales\Block\Adminhtml\Order\View" template="Tochat_Whatsapp::view.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Tochat\Whatsapp\ViewModel\Whatsapp</argument>
+                </arguments>
+            </block>
             <block  template="Tochat_Whatsapp::js.phtml">
                 <arguments>
-                    <argument name="view_model" xsi:type="object">Tochat\Whatsapp\ViewMode\Whatsapp</argument>
+                    <argument name="view_model" xsi:type="object">Tochat\Whatsapp\ViewModel\Whatsapp</argument>
                 </arguments>
             </block>
         </referenceContainer>
