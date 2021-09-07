@@ -34,4 +34,19 @@ class Whatsapp extends DataObject implements ArgumentInterface
     {
         return $this->dataHelper->getMessages();
     }
+
+    public function isActive() : ?bool
+    {
+        return $this->dataHelper->isActive();
+    }
+
+    public function timeElapsedString($datetime, $full = false)
+    {
+        return $this->dataHelper->timeElapsedString($datetime);
+    }
+
+    public function getRecentMessage($orderID)
+    {
+        return $this->dataHelper->getRecentMessage($orderID);
+    }
 }

@@ -45,14 +45,18 @@ define([
                 .done(function (response) {
                    _modal.modal('closeModal');
 
+                   window.open(apiUrl.replace('$phone',response.phone).replace('$text',response.message), '_blank').focus();
+
                    var sales_order_grid = uiRegistry.get('index = sales_order_grid');
                    if(sales_order_grid){
                         sales_order_grid.source.reload({
                             refresh: true
                         });
+                   }else{
+                        window.location.reload();
                    }
 
-                   window.open(apiUrl.replace('$phone',response.phone).replace('$text',response.message), '_blank').focus();
+                   
                 })
                 .fail(function (response) {
                     alert({
