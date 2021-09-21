@@ -10,6 +10,9 @@ use \Magento\Sales\Api\OrderRepositoryInterface;
 
 class Data extends AbstractHelper
 {
+    const STATUS_SENT = 1;
+    const STATUS_PENDING = 2;
+    const STATUS_ERROR = 3;
 
     /**
      * @var CollectionFactory
@@ -68,7 +71,20 @@ class Data extends AbstractHelper
             'processing' => $this->getModuleConfig('order_messages/processing'),
             'canceled' => $this->getModuleConfig('order_messages/canceled'),
             'complete' => $this->getModuleConfig('order_messages/complete'),
-            'pending' => $this->getModuleConfig('order_messages/pending'),
+            'new' => $this->getModuleConfig('order_messages/new'),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTemplatesId()
+    {
+        return [
+            'processing' => $this->getModuleConfig('automation/template/processing'),
+            'canceled' => $this->getModuleConfig('automation/template/canceled'),
+            'complete' => $this->getModuleConfig('automation/template/complete'),
+            'new' => $this->getModuleConfig('automation/template/new'),
         ];
     }
 
@@ -76,6 +92,7 @@ class Data extends AbstractHelper
     {
         return $this->collectionFactory->create()
                      ->addFieldToFilter('order_id', $orderID)
+                     ->addFieldToFilter('status', self::STATUS_SENT)
                      ->setOrder('created_at', 'DESC')
                      ->getFirstItem();
     }

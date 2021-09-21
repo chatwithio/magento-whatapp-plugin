@@ -70,16 +70,16 @@ class Send extends Action
 
             $model = $this->messageFactory->create();
 
+            $order = $this->orderRepository->get($data['order_id']);
+
             $model->setOrderId($data['order_id'])
+                ->setIncrementId($order->getIncrementId())
                 ->setMessage($data['message'])
                 ->save();
 
-            $order = $this->orderRepository->get($data['order_id']);
-
             $history = $order->addStatusHistoryComment(
-                '<b>' . __("WhatsApp") . ':</b> '.
-                $data['message'],
-                $order->getStatus()
+                __("WhatsApp:"). $data['message'],
+                $order->getState()
             );
             $history->setIsVisibleOnFront(false);
             $history->setIsCustomerNotified(false);

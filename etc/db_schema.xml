@@ -4,7 +4,11 @@
     	>  
         <column xsi:type="int" name="id" unsigned="false" nullable="false" identity="true" comment="ID" />
         <column xsi:type="int" name="order_id" unsigned="true" comment="Sales Order Id"/>
-        <column xsi:type="mediumtext" name="message" nullable="true" comment="Message" />     
+        <column xsi:type="varchar" name="increment_id" nullable="false" comment="Sales Order Increment Id"/>
+        <column xsi:type="mediumtext" name="message" nullable="true" comment="Message" />
+        <column xsi:type="smallint" name="status" nullable="false" default="1" comment="Status" />
+        <column xsi:type="mediumtext" name="log" nullable="true" comment="Log Message" />
+        <column xsi:type="varchar" name="order_status" nullable="true" comment="Order Status" />
         <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="id"/>
@@ -12,6 +16,13 @@
         <constraint xsi:type="foreign" referenceId="TOCHAT_WHATSAPP_MESSAGE_ORDER_ID_SALES_ORDER_ENTITY_ID"
                     table="tochat_whatsapp_message" column="order_id" referenceTable="sales_order"
                     referenceColumn="entity_id" onDelete="SET NULL"/>
+
+        <index referenceId="TOCHAT_WHATSAPP_MESSAGE_MESSAGE_INCREMENT_ID_ORDER_STATUS_LOG" indexType="fulltext">
+            <column name="message"/>
+            <column name="increment_id"/>
+            <column name="order_status"/>
+            <column name="log"/>
+        </index>
 
     </table>
 </schema>

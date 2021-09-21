@@ -6,11 +6,18 @@
     			<status>1</status>
     		</general>
     		<order_messages>
-                <pending><![CDATA[Please create your payment.]]></pending>
+                <new><![CDATA[Thank you for your order.]]></new>
     			<processing><![CDATA[Thank you for your order. We are working on it. The estimated time of arrival will be in 48 / 72 hours. Thank you.]]></processing>
                 <canceled><![CDATA[Hi, I saw your order was canceled. Can we do anything to help you? I am John Doe by the way. Just reply here and keep whatsapping.]]></canceled>
                 <complete><![CDATA[Hi, thank you for your order. Please let us know if everything went well. My name is John Doe By the way!]]></complete>
     		</order_messages>
+            <automation>
+                <status>0</status>
+                <endpoint><![CDATA[https://waba.360dialog.io/v1/!]]></endpoint>
+            </automation>
+            <widget>
+                <status>0</status>
+            </widget>
 		</tochat_whatsapp>
     </default>
 </config>

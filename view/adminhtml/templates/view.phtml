@@ -12,9 +12,9 @@ if (!$helper->isActive()) { return;
 <div class="whatsapp-block">
     <button class='whatsapp' 
         data-phone='<?= $block->escapeHtmlAttr($order->getBillingAddress()->getTelephone()) ?>'
-        data-status='<?= $block->escapeHtmlAttr($order->getStatus()) ?>'
+        data-status='<?= $block->escapeHtmlAttr($order->getState()) ?>'
         data-id='<?= $block->escapeHtmlAttr($order->getId()) ?>'><?= /* @noEscape */ __("Click to Chat") ?></button>
-    <?php if ($message): ?>
+    <?php if ($message->getId()): ?>
     <p><?= /* @noEscape */ __("Last message sent %1:", $helper->timeElapsedString($message->getCreatedAt())) ?></p>
     <p><strong><?= /* @noEscape */ __("WhatsApp") ?>:</strong><?= $block->escapeHtml($message->getMessage()) ?></p>
     <?php endif; ?>

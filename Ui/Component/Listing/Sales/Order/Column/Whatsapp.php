@@ -75,12 +75,12 @@ class Whatsapp extends Column
 
                 $htm .= '<br/>';
 
-                if ($message) {
+                if ($message->getId()) {
                     $htm .= __("Last message sent %1:", $this->dataHelper->timeElapsedString($message->getCreatedAt()));
 
                     $htm .= '<br/>';
 
-                    $htm .= '<b>'.__("WhatsApp").':</b>';
+                    $htm .= __("WhatsApp:");
 
                     $htm .= $message->getMessage();
                 }

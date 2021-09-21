@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+    	<add id="Tochat_Whatsapp::base" title="Tochat Whatsapp" translate="title" module="Tochat_Whatsapp" sortOrder="100" parent="Magento_Backend::system" resource="Tochat_Whatsapp::base"/>
+        <add id="Tochat_Whatsapp::log" title="Logs" translate="title" module="Tochat_Whatsapp" sortOrder="100" parent="Tochat_Whatsapp::base" action="tochat_whatsapp/log" resource="Tochat_Whatsapp::log"/>
+    </menu>
+</config>

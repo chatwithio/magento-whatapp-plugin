@@ -49,4 +49,9 @@ class Whatsapp extends DataObject implements ArgumentInterface
     {
         return $this->dataHelper->getRecentMessage($orderID);
     }
+
+    public function getModuleConfig($path)
+    {
+        return $this->dataHelper->getModuleConfig($path);
+    }
 }
