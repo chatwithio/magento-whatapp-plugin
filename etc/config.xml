@@ -13,7 +13,7 @@
     		</order_messages>
             <automation>
                 <status>0</status>
-                <endpoint><![CDATA[https://waba.360dialog.io/v1/!]]></endpoint>
+                <endpoint><![CDATA[https://waba.360dialog.io/v1/]]></endpoint>
             </automation>
             <widget>
                 <status>0</status>
