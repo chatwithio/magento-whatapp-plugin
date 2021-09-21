@@ -9,26 +9,79 @@
             <label>Whatsapp</label>
             <tab>tochat</tab>
             <resource>Tochat_Whatsapp::config</resource>
-            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1">
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General</label>
-                <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" canRestore="1">
+                <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enable/Disable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <group id="order_messages" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1">
+            <group id="order_messages" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Order Messages</label>
-                <field id="pending" translate="label" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" canRestore="1">
-                    <label>Pending</label>
+                <field id="new" translate="label" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>New</label>
                 </field>
-                <field id="processing" translate="label" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" canRestore="1">
+                <field id="processing" translate="label" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Processing</label>
                 </field>
-                <field id="canceled" translate="label" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" canRestore="1">
+                <field id="canceled" translate="label" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Canceled</label>
                 </field>
-                <field id="complete" translate="label" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" canRestore="1">
+                <field id="complete" translate="label" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Completed</label>
+                </field>
+            </group>
+
+            <group id="automation" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Automattion</label>
+                <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable/Disable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>if Yes, Don't Forget to assign template to appropriate order status in Template Section. If there is not template in list Please save the config first Or recheck your api key.</comment>
+                </field>
+                
+                <field id="apikey" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Tochat ApiKey</label>
+                </field>
+
+                <field id="endpoint" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Endpoint</label>
+                </field>
+
+                <group id="template" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Templates</label>
+                    <field id="new" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>New</label>
+                        <source_model>Tochat\Whatsapp\Model\Config\Source\Template</source_model>
+                    </field>
+                    <field id="processing" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Processing</label>
+                        <source_model>Tochat\Whatsapp\Model\Config\Source\Template</source_model>
+                    </field>
+                    <field id="canceled" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Canceled</label>
+                        <source_model>Tochat\Whatsapp\Model\Config\Source\Template</source_model>
+                    </field>
+                    <field id="complete" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Completed</label>
+                        <source_model>Tochat\Whatsapp\Model\Config\Source\Template</source_model>
+                    </field>
+
+                    <comment><![CDATA[Supported Placeholders: {{1}}=ORDERID, {{2}}=Name, {{3}}=Total, {{4}}=ItemCount. Note: Whatsapp limitations, all these placeholders must exists in templates]]></comment>
+
+                </group>
+            </group>
+
+            <group id="widget" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Snippet</label>
+
+                <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable/Disable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="snippet" translate="label" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Tochat Widget Code</label>
                 </field>
             </group>
         </section>

@@ -8,6 +8,7 @@
                         <resource id="Magento_Config::config">
                             <resource id="Tochat_Whatsapp::base" title="Tochat" translate="title">
                             	  <resource id="Tochat_Whatsapp::config" title="Whatsapp" translate="title" sortOrder="100" />
+                                  <resource id="Tochat_Whatsapp::log" title="Log" translate="title" sortOrder="110" />
                             </resource>
                         </resource>
                     </resource>

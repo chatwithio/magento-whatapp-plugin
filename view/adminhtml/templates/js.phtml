@@ -25,7 +25,9 @@ $helper = $block->getViewModel();
                              <label><?= /* @noEscape */ __("Message") ?></label>
                         </div>
                         <div class="admin__field-control">
-                             <textarea name="message" rows="5" class="admin__control-textarea required-entry"></textarea>
+                             <textarea name="message" 
+                                rows="5" 
+                                class="admin__control-textarea required-entry"></textarea>
                         </div>
                     </div>
                 </fieldset>
@@ -38,7 +40,7 @@ $helper = $block->getViewModel();
         "*": {
             "Tochat_Whatsapp/js/whatsapp": {
                 "messages": <?= /* @noEscape */ json_encode($helper->getMessages()) ?>,
-                "url": "<?= $block->escapeUrl($block->getUrl('tochatw/index/send')) ?>"
+                "url": "<?= $block->escapeUrl($block->getUrl('tochat_whatsapp/index/send')) ?>"
             }
         }
     }

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<page layout="3columns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="before.body.end">
+            <block name="tochat.widget" template="Tochat_Whatsapp::widget.phtml" ifconfig="tochat_whatsapp/widget/status">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Tochat\Whatsapp\ViewModel\Whatsapp</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>
