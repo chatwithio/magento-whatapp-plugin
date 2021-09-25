@@ -3,21 +3,17 @@
 namespace Tochat\Whatsapp\Cron;
 
 use \Psr\Log\LoggerInterface;
-use Tochat\Whatsapp\Model\ResourceModel\Message\CollectionFactory;
+use Magento\Quote\Model\ResourceModel\Quote\CollectionFactory;
 use Tochat\Whatsapp\Helper\Api;
 use Tochat\Whatsapp\Helper\Data as DataHelper;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Directory\Model\CurrencyFactory;
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Tochat\Whatsapp\Model\MessageFactory;
 
-class Send
+class Cart
 {
-
-    /**
-     * @var array
-     */
-    private $templates = [];
-
     /**
      * @var array
      */
@@ -58,23 +54,35 @@ class Send
      */
     protected $currencyFactory;
 
+    /**
+     * @var CustomerRepositoryInterface
+     */
+    protected $customerRepository;
+
+    /**
+     * @var MessageFactory
+     */
+    protected $messageFactory;
+
 
     public function __construct(
         LoggerInterface $logger,
         CollectionFactory $collectionFactory,
         Api $api,
         DataHelper $dataHelper,
-        OrderRepositoryInterface $orderRepositoryInterface,
         StoreManagerInterface $storeManagerInterface,
+        CustomerRepositoryInterface $customerRepository,
+        MessageFactory $messageFactory,
         CurrencyFactory $currencyFactory
     ) {
         $this->api = $api;
         $this->dataHelper = $dataHelper;
         $this->logger = $logger;
         $this->collectionFactory = $collectionFactory;
-        $this->orderRepositoryInterface = $orderRepositoryInterface;
         $this->storeManagerInterface = $storeManagerInterface;
         $this->currencyFactory = $currencyFactory;
+        $this->customerRepository = $customerRepository;
+        $this->messageFactory = $messageFactory;
     }
 
     public function getCurrency($code)
@@ -86,24 +94,13 @@ class Send
         return $this->currency[$code];
     }
 
-    public function getAssignedTemplates($code)
-    {
-        if (!isset($this->templates[$code])) {
-            $this->templates[$code] = $this->dataHelper->getTemplatesId($code);
-        }
-        return $this->templates[$code];
-    }
-
     public function execute()
     {
-        if (!$this->api->isActive()) {
+        if (!$this->api->isActive()
+            || !$this->dataHelper->getModuleConfig('automation/abandoned/status')
+        ) {
             return;
         }
-
-        $messesges = $this->collectionFactory->create()
-                    ->addFieldToFilter('status', DataHelper::STATUS_PENDING);
-
-        if(!$messesges->getSize()) return;
 
         //Fetch Templates
         $templates = [];
@@ -116,22 +113,28 @@ class Send
             }
         }
 
-        //$orderTemps = $this->dataHelper->getTemplatesId();
+        $interval = $this->dataHelper->getModuleConfig('automation/abandoned/interval');
 
-        // print_r($orderTemps);
+        $collections = $this->collectionFactory->create()
+            ->addFieldToSelect('*')
+            ->addFieldToFilter('customer_id',['neq' => 'NULL'])
+            ->addFieldToFilter('is_active',1)
+            ->addFieldToFilter(new \Zend_Db_Expr("DATE_FORMAT(`updated_at`, '%Y-%m-%d %H') = DATE_FORMAT((now() - INTERVAL $interval HOUR), '%Y-%m-%d %H')"));
 
-        //$this->logger->log(100,print_r($orderTemps,true));
+        foreach($collections as $quote){
 
-        foreach ($messesges as $message) {
-            $order  = $this->orderRepositoryInterface->get($message->getOrderId());
+            $store = $quote->getStore();
+            $customer = $this->customerRepository->getById($quote->getCustomerId());
+            $tel = trim($customer->getExtensionAttributes()->getMobile(), '+');
+            $template = $this->dataHelper->getModuleConfig('automation/abandoned/template', $store->getStoreCode());
 
-            $orderTemps = $this->getAssignedTemplates($order->getStore()->getStoreCode());
+            if(!empty($tel) 
+                && !empty($template)
+                && $quote->hasItems()
+                && $this->api->checkContact($tel)){
 
-            $tel = trim($order->getBillingAddress()->getTelephone(), '+');
-            //Validate Contact
-            if (isset($orderTemps[$order->getState()]) && $this->api->checkContact($tel)) {
+                [$tId, $lang] = explode('.', $template);
 
-                [$tId, $lang] = explode('.', $orderTemps[$order->getState()]);
 
                 //Search the template body content for placeholder and fill them with values
                 $tempObj = $templates[$lang][$tId];
@@ -139,17 +142,17 @@ class Send
                     return $e->type == 'BODY';
                 }));
                 $name = null;
-                foreach ($order->getAllVisibleItems() as $item) {
+                foreach ($quote->getAllVisibleItems() as $item) {
                     $name[] = $item->getName();
                 }
                 $itemName = implode(',', $name);
                 preg_match_all("/{{+\d+}}/",$body->text, $placeholders);
                 $placeholders = $placeholders[0];
                 $values = [
-                    1 => $order->getIncrementId(),
-                    2 => $order->getCustomerFirstname() . ' ' . $order->getCustomerLastname(),
-                    3 => strlen($itemName) > 150 ? substr($itemName, 0, 150) . '...' : $itemName,
-                    4 => $this->getCurrency($order->getStoreCurrencyCode()) . number_format($order->getBaseGrandTotal(),2),
+                    1 => $customer->getFirstname() . ' ' . $customer->getLastname(),
+                    2 => strlen($itemName) > 150 ? substr($itemName, 0, 150) . '...' : $itemName,
+                    3 => $this->getCurrency($quote->getStoreCurrencyCode()) . number_format($quote->getBaseGrandTotal(),2),
+                    4 => $store->getName(),
                 ];
                 if(count($placeholders)){
                     foreach(range(1, 4) as $i){
@@ -162,8 +165,8 @@ class Send
                     return '{{' . $e . '}}';
                 }, array_keys($values)), $values, $body->text);
                 //END
-                
 
+                //Send Message via API
                 $response = $this->api->sendWhatsApp(
                     $tel,
                     $values,
@@ -171,36 +174,35 @@ class Send
                     $lang,
                     $tempObj->namespace //namespace
                 );
-                if (isset($response->meta->success)
-                    && $response->meta->success == false) {
 
-                    //Update Message Status
-                    $message->setStatus(DataHelper::STATUS_ERROR)
-                            ->setMessage($messageStr)
-                            ->setSentOn(date('Y-m-d H:i:s'))
-                            ->setLog($response->meta->developer_message)
-                            ->save();
-                } else {
+                $status = DataHelper::STATUS_SENT;
+                $log = null;
 
-                    //Add Message to Order Comment History
-                    $history = $order->addStatusHistoryComment(
-                        __("WhatsApp:") . $message->getMessage(),
-                        $order->getState()
-                    );
-                    $history->setIsVisibleOnFront(false);
-                    $history->setIsCustomerNotified(true);
-                    $history->save();
-
-                    $message->setStatus(DataHelper::STATUS_SENT)
-                    ->setSentOn(date('Y-m-d H:i:s'))
-                    ->setMessage($messageStr)
-                    ->save();
+                if (
+                    (
+                        isset($response->meta->success) 
+                        && 
+                        $response->meta->success == false
+                    )
+                    || isset($response->errors)
+                ) {
+                    $status = DataHelper::STATUS_ERROR;
+                    $log = implode("|",array_map(function($ele){
+                            return $ele->details;
+                        }, $response->errors));
                 }
-            } else {
-                //Update Message Status
-                $message->setStatus(DataHelper::STATUS_ERROR)
+
+                $model = $this->messageFactory->create();
+                    
+                $model->setStatus($status)
+                    ->setMessage($messageStr)
+                    ->setType(DataHelper::TYPE_CART)
+                    ->setExtradata($this->dataHelper->serialize([
+                        'email' => $customer->getEmail(),
+                        'mobile' => $tel
+                    ]))
                     ->setSentOn(date('Y-m-d H:i:s'))
-                    ->setLog(__("Invalid Phone Number"))
+                    ->setLog($log)
                     ->save();
             }
         }

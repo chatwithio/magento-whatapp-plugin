@@ -2,7 +2,10 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
     <group id="default">
         <job name="tochat_whatsapp_message_automation" instance="Tochat\Whatsapp\Cron\Send" method="execute">
-            <schedule>*/5 * * * *</schedule>
+            <schedule>*/10 * * * *</schedule>
+        </job>
+        <job name="tochat_whatsapp_abandoned_cart" instance="Tochat\Whatsapp\Cron\Cart" method="execute">
+            <schedule>0 * * * *</schedule>
         </job>
     </group>
 </config>

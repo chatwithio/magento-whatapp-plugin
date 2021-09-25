@@ -14,6 +14,10 @@
             <automation>
                 <status>0</status>
                 <endpoint><![CDATA[https://waba.360dialog.io/v1/]]></endpoint>
+                <abandoned>
+                    <status>0</status>
+                    <interval>5</interval>
+                </abandoned>
             </automation>
             <widget>
                 <status>0</status>

@@ -22,6 +22,9 @@ class Template implements \Magento\Framework\Option\ArrayInterface
                 }
             }
         }
+        usort($this->templates, function($a, $b){
+            return $a['label'] <=> $b['label'];
+        });
     }
 
     /**
