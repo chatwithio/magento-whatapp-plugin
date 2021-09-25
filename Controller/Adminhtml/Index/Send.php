@@ -8,6 +8,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\InputException;
 use Tochat\Whatsapp\Model\MessageFactory;
 use Psr\Log\LoggerInterface;
+use Tochat\Whatsapp\Helper\Data as DataHelper;
 
 class Send extends Action
 {
@@ -38,17 +39,23 @@ class Send extends Action
      * @var LoggerInterface
      */
     protected $logger;
+    /**
+     * @var DataHelper
+     */
+    protected $dataHelper;
 
     public function __construct(
         Action\Context $context,
         OrderRepositoryInterface $orderRepository,
         \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
         MessageFactory $messageFactory,
+        DataHelper $dataHelper,
         LoggerInterface $logger
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->messageFactory = $messageFactory;
         $this->orderRepository = $orderRepository;
+        $this->dataHelper = $dataHelper;
         $this->logger = $logger;
         parent::__construct($context);
     }
@@ -73,7 +80,11 @@ class Send extends Action
             $order = $this->orderRepository->get($data['order_id']);
 
             $model->setOrderId($data['order_id'])
-                ->setIncrementId($order->getIncrementId())
+                ->setExtradata($this->dataHelper->serialize([
+                    'increment_id' => $order->getIncrementId(),
+                    'status' => $order->getState(),
+                ]))
+                ->setSentOn(date('Y-m-d H:i:s'))
                 ->setMessage($data['message'])
                 ->save();
 

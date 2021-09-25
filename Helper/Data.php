@@ -6,13 +6,16 @@ use Magento\Framework\App as App;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Store\Model\ScopeInterface;
 use Tochat\Whatsapp\Model\ResourceModel\Message\CollectionFactory;
-use \Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Framework\Serialize\SerializerInterface;
 
 class Data extends AbstractHelper
 {
     const STATUS_SENT = 1;
     const STATUS_PENDING = 2;
     const STATUS_ERROR = 3;
+    const TYPE_ORDER = 1;
+    const TYPE_CART = 2;
 
     /**
      * @var CollectionFactory
@@ -25,6 +28,11 @@ class Data extends AbstractHelper
     protected $orderRepositoryInterface;
 
     /**
+     * @var SerializerInterface
+     */
+    protected $serializerInterface;
+
+    /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
     private $storeManager;
@@ -33,11 +41,13 @@ class Data extends AbstractHelper
         App\Helper\Context $context,
         CollectionFactory $collectionFactory,
         OrderRepositoryInterface $orderRepositoryInterface,
+        SerializerInterface $serializerInterface,
         \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->storeManager = $storeManager;
         $this->collectionFactory = $collectionFactory;
         $this->orderRepositoryInterface = $orderRepositoryInterface;
+        $this->serializerInterface = $serializerInterface;
         parent::__construct(
             $context
         );
@@ -46,11 +56,12 @@ class Data extends AbstractHelper
     /**
      * {@inheritdoc}
      */
-    public function getModuleConfig(string $path) : ?string
+    public function getModuleConfig(string $path, $store_code = null) : ?string
     {
         return $this->scopeConfig->getValue(
             'tochat_whatsapp/' . $path,
-            ScopeInterface::SCOPE_STORE
+            ScopeInterface::SCOPE_STORE,
+            $store_code
         );
     }
 
@@ -78,13 +89,13 @@ class Data extends AbstractHelper
     /**
      * {@inheritdoc}
      */
-    public function getTemplatesId()
+    public function getTemplatesId($store_code = null)
     {
         return [
-            'processing' => $this->getModuleConfig('automation/template/processing'),
-            'canceled' => $this->getModuleConfig('automation/template/canceled'),
-            'complete' => $this->getModuleConfig('automation/template/complete'),
-            'new' => $this->getModuleConfig('automation/template/new'),
+            'processing' => $this->getModuleConfig('automation/template/processing', $store_code),
+            'canceled' => $this->getModuleConfig('automation/template/canceled', $store_code),
+            'complete' => $this->getModuleConfig('automation/template/complete', $store_code),
+            'new' => $this->getModuleConfig('automation/template/new', $store_code),
         ];
     }
 
@@ -101,6 +112,16 @@ class Data extends AbstractHelper
     {
         $order  = $this->orderRepositoryInterface->get($orderID);
         return $order->getBillingAddress()->getTelephone();
+    }
+
+    public function serialize($data)
+    {
+        return $this->serializerInterface->serialize($data);
+    }
+
+    public function unserialize($data)
+    {
+        return $this->serializerInterface->unserialize($data);
     }
 
     public function timeElapsedString($datetime, $full = false)

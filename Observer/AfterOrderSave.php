@@ -37,8 +37,10 @@ class AfterOrderSave implements ObserverInterface
             $messages = $this->dataHelper->getTemplatesId();
 
             $model->setOrderId($order->getId())
-                ->setIncrementId($order->getIncrementId())
-                ->setOrderStatus($order->getState())
+                ->setExtradata($this->dataHelper->serialize([
+                    'increment_id' => $order->getIncrementId(),
+                    'status' => $order->getState(),
+                ]))
                 ->setStatus(DataHelper::STATUS_PENDING)
                 ->setMessage($messages[$order->getState()])
                 ->save();

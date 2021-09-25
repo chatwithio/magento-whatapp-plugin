@@ -11,7 +11,7 @@
             <resource>Tochat_Whatsapp::config</resource>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General</label>
-                <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" canRestore="1">
                     <label>Enable/Disable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
@@ -34,17 +34,17 @@
 
             <group id="automation" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Automattion</label>
-                <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" canRestore="1">
                     <label>Enable/Disable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>if Yes, Don't Forget to assign template to appropriate order status in Template Section. If there is not template in list Please save the config first Or recheck your api key.</comment>
                 </field>
                 
-                <field id="apikey" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="apikey" translate="label" type="text" sortOrder="20" showInDefault="1">
                     <label>Tochat ApiKey</label>
                 </field>
 
-                <field id="endpoint" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="endpoint" translate="label" type="text" sortOrder="30" showInDefault="1">
                     <label>Endpoint</label>
                 </field>
 
@@ -67,7 +67,28 @@
                         <source_model>Tochat\Whatsapp\Model\Config\Source\Template</source_model>
                     </field>
 
-                    <comment><![CDATA[Supported Placeholders: {{1}}=ORDERID, {{2}}=Name, {{3}}=Total, {{4}}=ItemCount. Note: Whatsapp limitations, all these placeholders must exists in templates]]></comment>
+                    <comment><![CDATA[Supported Placeholders: {{1}}=ORDERID, {{2}}=CustomerName, {{3}}=ProductNames, {{4}}=Total.]]></comment>
+
+                </group>
+
+                <group id="abandoned" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Abandoned Cart</label>
+                    <comment><![CDATA[Supported Placeholders: {{1}}=CustomerName, {{2}}=ProductNames, {{3}}=Total, {{4}}=StoreName]]></comment>
+
+                    <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" canRestore="1">
+                        <label>Enable/Disable</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+
+                    <field id="interval" translate="label" type="select" sortOrder="20" showInDefault="1" canRestore="1">
+                        <label>Interval</label>
+                        <source_model>Tochat\Whatsapp\Model\Config\Source\Interval</source_model>
+                    </field>                    
+
+                    <field id="template" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Template</label>
+                        <source_model>Tochat\Whatsapp\Model\Config\Source\Template</source_model>
+                    </field>
 
                 </group>
             </group>

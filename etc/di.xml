@@ -17,4 +17,8 @@
         </arguments>
     </virtualType>
 
+    <type name="Magento\Customer\Model\Customer">
+        <plugin name="Tochat_Whatsapp::plugin_magento_customer_model_customer" type="Tochat\Whatsapp\Plugin\Customer\Model\Customer"/>
+    </type>
+
 </config>

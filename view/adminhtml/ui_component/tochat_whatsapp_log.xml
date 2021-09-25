@@ -72,10 +72,11 @@
             </settings>
         </column>
 
-        <column name="increment_id" sortOrder="25">
+        <column name="extradata" sortOrder="25" class="Tochat\Whatsapp\Ui\Component\Listing\Log\Column\Extradata">
             <settings>
                 <filter>text</filter>
-                <label translate="true">Order ID</label>
+                <label translate="true">Data</label>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
             </settings>
         </column>
         
@@ -99,6 +100,16 @@
                 <options class="Tochat\Whatsapp\Model\Source\Status"/>
                 <dataType>select</dataType>
                 <label translate="true">Status</label>
+                <sortable>false</sortable>
+            </settings>
+        </column>
+
+        <column name="type" component="Magento_Ui/js/grid/columns/select" sortOrder="50">
+            <settings>
+                <filter>select</filter>
+                <options class="Tochat\Whatsapp\Model\Source\Type"/>
+                <dataType>select</dataType>
+                <label translate="true">Type</label>
                 <sortable>false</sortable>
             </settings>
         </column>
