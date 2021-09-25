@@ -30,7 +30,7 @@
 
         <index referenceId="TOCHAT_WHATSAPP_MESSAGE_MESSAGE_DATA_LOG" indexType="fulltext">
             <column name="message"/>
-            <column name="data"/>
+            <column name="extradata"/>
             <column name="log"/>
         </index>
 
