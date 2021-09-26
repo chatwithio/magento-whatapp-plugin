@@ -5,7 +5,7 @@
             <schedule>*/10 * * * *</schedule>
         </job>
         <job name="tochat_whatsapp_abandoned_cart" instance="Tochat\Whatsapp\Cron\Cart" method="execute">
-            <schedule>0 * * * *</schedule>
+            <schedule>* * * * *</schedule>
         </job>
     </group>
 </config>

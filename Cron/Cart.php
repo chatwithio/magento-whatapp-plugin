@@ -113,13 +113,17 @@ class Cart
             }
         }
 
-        $interval = $this->dataHelper->getModuleConfig('automation/abandoned/interval');
+        $interval = (float)$this->dataHelper->getModuleConfig('automation/abandoned/interval');
+
+        $interval = $interval < 1 ? intval($interval * 60) . ' MINUTE' : $interval . ' HOUR' ;
 
         $collections = $this->collectionFactory->create()
-            ->addFieldToSelect('*')
             ->addFieldToFilter('customer_id',['neq' => 'NULL'])
             ->addFieldToFilter('is_active',1)
-            ->addFieldToFilter(new \Zend_Db_Expr("DATE_FORMAT(`updated_at`, '%Y-%m-%d %H') = DATE_FORMAT((now() - INTERVAL $interval HOUR), '%Y-%m-%d %H')"));
+            ->addFieldToFilter(
+                new \Zend_Db_Expr("DATE_FORMAT(`updated_at`, '%Y-%m-%d %H:%i') = DATE_FORMAT((now() - INTERVAL $interval), '%Y-%m-%d %H:%i')"),
+                1
+            );
 
         foreach($collections as $quote){
 

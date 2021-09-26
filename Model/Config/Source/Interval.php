@@ -14,6 +14,8 @@ class Interval implements \Magento\Framework\Option\ArrayInterface
     public function toOptionArray()
     {
         return [
+            ['value' => '0.25', 'label' => __("%1 Minutes",15)],
+            ['value' => '0.5', 'label' => __("%1 Minutes",30)],
             ['value' => '1', 'label' => __("%1 hour",1)],
             ['value' => '3', 'label' => __("%1 hours",3)],
             ['value' => '5', 'label' => __("%1 hours",5)],
