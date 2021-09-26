@@ -115,14 +115,12 @@ class Cart
 
         $interval = (float)$this->dataHelper->getModuleConfig('automation/abandoned/interval');
 
-        $interval = $interval < 1 ? intval($interval * 60) . ' MINUTE' : $interval . ' HOUR' ;
-
         $collections = $this->collectionFactory->create()
             ->addFieldToFilter('customer_id',['neq' => 'NULL'])
             ->addFieldToFilter('is_active',1)
             ->addFieldToFilter(
-                new \Zend_Db_Expr("DATE_FORMAT(`updated_at`, '%Y-%m-%d %H:%i') = DATE_FORMAT((now() - INTERVAL $interval), '%Y-%m-%d %H:%i')"),
-                1
+                new \Zend_Db_Expr("TIMESTAMPDIFF(MINUTE, `updated_at`, now())"),
+                intval($interval * 60)
             );
 
         foreach($collections as $quote){
