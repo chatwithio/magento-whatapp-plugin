@@ -11,6 +11,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use Magento\Directory\Model\CurrencyFactory;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Tochat\Whatsapp\Model\MessageFactory;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 class Cart
 {
@@ -94,6 +95,50 @@ class Cart
         return $this->currency[$code];
     }
 
+    public function getCustomerData($quote){
+        
+        if(!empty($quote->getCustomerId())){
+            try{
+                $customer = $this->customerRepository->getById($quote->getCustomerId());
+                return [
+                    'name' => $customer->getFirstname() . ' ' . $customer->getLastname(),
+                    'email' => $customer->getEmail(),
+                    'tel' => $customer->getExtensionAttributes()->getMobile() ?? $quote->getBillingAddress()->getTelephone(),
+                ];
+            }catch(NoSuchEntityException  $e){}
+        }
+
+        $email = $quote->getCustomerEmail() ?? $quote->getBillingAddress()->getEmail();
+
+        if($email){
+            try{
+                $customer = $this->customerRepository->get($email);
+                return [
+                    'name' => $customer->getFirstname() . ' ' . $customer->getLastname(),
+                    'email' => $customer->getEmail(),
+                    'tel' => $customer->getExtensionAttributes()->getMobile() ?? $quote->getBillingAddress()->getTelephone(),
+                ];
+            }catch(NoSuchEntityException  $e){
+                if(!empty($quote->getBillingAddress()->getTelephone())){
+                    return [
+                        'name' => $quote->getCustomerFirstname() . ' ' . $quote->getCustomerLastname(),
+                        'email' => $quote->getCustomerEmail(),
+                        'tel' => $quote->getBillingAddress()->getTelephone(),
+                    ];
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function validate($data){
+        if(count(array_filter($data)) == 3){
+            return true;            
+        }
+        return false;
+    }
+
     public function execute()
     {
         if (!$this->api->isActive()
@@ -116,7 +161,7 @@ class Cart
         $interval = (float)$this->dataHelper->getModuleConfig('automation/abandoned/interval');
 
         $collections = $this->collectionFactory->create()
-            ->addFieldToFilter('customer_id',['neq' => 'NULL'])
+            ->addFieldToFilter('customer_email',['neq' => 'NULL'])
             ->addFieldToFilter('is_active',1)
             ->addFieldToFilter(
                 new \Zend_Db_Expr("TIMESTAMPDIFF(MINUTE, `updated_at`, now())"),
@@ -125,9 +170,12 @@ class Cart
 
         foreach($collections as $quote){
 
+            $customerData = $this->getCustomerData($quote);
+
+            if(!$this->validate($customerData)) continue;
+
             $store = $quote->getStore();
-            $customer = $this->customerRepository->getById($quote->getCustomerId());
-            $tel = trim($customer->getExtensionAttributes()->getMobile(), '+');
+            $tel = trim($customerData['tel'], '+');
             $template = $this->dataHelper->getModuleConfig('automation/abandoned/template', $store->getStoreCode());
 
             if(!empty($tel) 
@@ -136,7 +184,6 @@ class Cart
                 && $this->api->checkContact($tel)){
 
                 [$tId, $lang] = explode('.', $template);
-
 
                 //Search the template body content for placeholder and fill them with values
                 $tempObj = $templates[$lang][$tId];
@@ -151,7 +198,7 @@ class Cart
                 preg_match_all("/{{+\d+}}/",$body->text, $placeholders);
                 $placeholders = $placeholders[0];
                 $values = [
-                    1 => $customer->getFirstname() . ' ' . $customer->getLastname(),
+                    1 => $customerData['name'],
                     2 => strlen($itemName) > 150 ? substr($itemName, 0, 150) . '...' : $itemName,
                     3 => $this->getCurrency($quote->getStoreCurrencyCode()) . number_format($quote->getBaseGrandTotal(),2),
                     4 => $store->getName(),
@@ -200,7 +247,7 @@ class Cart
                     ->setMessage($messageStr)
                     ->setType(DataHelper::TYPE_CART)
                     ->setExtradata($this->dataHelper->serialize([
-                        'email' => $customer->getEmail(),
+                        'email' => $customerData['email'],
                         'mobile' => $tel
                     ]))
                     ->setSentOn(date('Y-m-d H:i:s'))

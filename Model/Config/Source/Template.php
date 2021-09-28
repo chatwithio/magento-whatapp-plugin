@@ -3,15 +3,18 @@
 namespace Tochat\Whatsapp\Model\Config\Source;
 
 use Tochat\Whatsapp\Helper\Api;
+use Magento\Framework\Message\ManagerInterface;
 
 class Template implements \Magento\Framework\Option\ArrayInterface
 {
     private $templates = [];
 
     public function __construct(
-        Api $api
+        Api $api,
+        ManagerInterface $messageManager
     ) {
         $response = $api->getTemplates();
+        
         if (isset($response->waba_templates)) {
             foreach($response->waba_templates as $template){
                 if($template->status == 'approved'){
@@ -21,6 +24,8 @@ class Template implements \Magento\Framework\Option\ArrayInterface
                     ];    
                 }
             }
+        }else if(isset($response->meta->success) && $response->meta->success == false){
+            $messageManager->addError('Tochat Whatsapp: ' . $response->meta->developer_message);
         }
         usort($this->templates, function($a, $b){
             return $a['label'] <=> $b['label'];
