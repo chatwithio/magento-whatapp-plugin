@@ -120,10 +120,11 @@ class Cart
                 ];
             }catch(NoSuchEntityException  $e){
                 if(!empty($quote->getBillingAddress()->getTelephone())){
+                    $billingAddress = $quote->getBillingAddress();
                     return [
-                        'name' => $quote->getCustomerFirstname() . ' ' . $quote->getCustomerLastname(),
-                        'email' => $quote->getCustomerEmail(),
-                        'tel' => $quote->getBillingAddress()->getTelephone(),
+                        'name' => $billingAddress->getFirstname() . ' ' . $billingAddress->getLastname(),
+                        'email' => $billingAddress->getEmail(),
+                        'tel' => $billingAddress->getTelephone(),
                     ];
                 }
             }
@@ -161,7 +162,6 @@ class Cart
         $interval = (float)$this->dataHelper->getModuleConfig('automation/abandoned/interval');
 
         $collections = $this->collectionFactory->create()
-            ->addFieldToFilter('customer_email',['neq' => 'NULL'])
             ->addFieldToFilter('is_active',1)
             ->addFieldToFilter(
                 new \Zend_Db_Expr("TIMESTAMPDIFF(MINUTE, `updated_at`, now())"),
