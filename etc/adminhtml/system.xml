@@ -11,6 +11,7 @@
             <resource>Tochat_Whatsapp::config</resource>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General</label>
+                <comment><![CDATA[Tutorials, Videos, Demos.. <a href='https://tochat.be/magento-order-notifications-whatsapp/' target="_blank">tochat.be</a>]]></comment>
                 <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" canRestore="1">
                     <label>Enable/Disable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -33,7 +34,7 @@
             </group>
 
             <group id="automation" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Automattion</label>
+                <label>Order Notification with Whatsapp API</label>
                 <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" canRestore="1">
                     <label>Enable/Disable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -49,7 +50,7 @@
                 </field>
 
                 <group id="template" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Templates</label>
+                    <label>WhatsApp API Templates</label>
                     <field id="new" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>New</label>
                         <source_model>Tochat\Whatsapp\Model\Config\Source\Template</source_model>
@@ -72,7 +73,7 @@
                 </group>
 
                 <group id="abandoned" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Abandoned Cart</label>
+                    <label>Recover Abandoned Cart</label>
                     <comment><![CDATA[Supported Placeholders: {{1}}=CustomerName, {{2}}=ProductNames, {{3}}=Total, {{4}}=StoreName]]></comment>
 
                     <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" canRestore="1">
@@ -94,7 +95,7 @@
             </group>
 
             <group id="widget" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Snippet</label>
+                <label>WhatsApp Widget</label>
 
                 <field id="status" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enable/Disable</label>
